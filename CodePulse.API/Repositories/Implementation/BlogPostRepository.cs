@@ -7,7 +7,7 @@ using System.Collections;
 
 namespace CodePulse.API.Repositories.Implementation
 {
-    public class BlogPostRepository: IBlogPostRepository
+    public class BlogPostRepository : IBlogPostRepository
     {
         private readonly ApplicationDbContext dbContext;
 
@@ -20,6 +20,20 @@ namespace CodePulse.API.Repositories.Implementation
             await dbContext.BlogPosts.AddAsync(blogPost);
             await dbContext.SaveChangesAsync();
             return blogPost;
+        }
+
+        public async Task<BlogPost?> DeleteAsync(Guid id)
+        {
+            var existingBlogPost = await dbContext.BlogPosts.FirstOrDefaultAsync(x => x.Id == id);
+
+            if(existingBlogPost is not null)
+            {
+                dbContext.BlogPosts.Remove(existingBlogPost);
+                dbContext.SaveChangesAsync();
+                return existingBlogPost;
+            }
+            return null;
+
         }
 
         public async Task<IEnumerable<BlogPost>> GetAllAsync()
@@ -40,7 +54,7 @@ namespace CodePulse.API.Repositories.Implementation
             {
                 return null;
             }
-            
+
             // Update BlogPost
             dbContext.Entry(existingBlogPost).CurrentValues.SetValues(blogPost);
 
@@ -50,5 +64,7 @@ namespace CodePulse.API.Repositories.Implementation
             await dbContext.SaveChangesAsync();
             return blogPost;
         }
+
+        
     }
 }

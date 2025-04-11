@@ -3,6 +3,7 @@ using CodePulse.API.Models.DTO;
 using CodePulse.API.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CodePulse.API.Controllers
 {
@@ -195,6 +196,35 @@ namespace CodePulse.API.Controllers
                     UrlHandle = x.UrlHandle
                 }).ToList()
             };
+            return Ok(response);
+        }
+
+        // DELETE : {apibaseurl}/api/blogposts/{id}
+        [HttpDelete]
+        [Route("{id:Guid}")]
+
+        public async Task<IActionResult> DeleteBlogPost([FromRoute] Guid id)
+        {
+            var deletedBlogPost = await blogPostRepository.DeleteAsync(id);
+            if (deletedBlogPost is null)
+            {
+                return NotFound();
+            }
+
+            // Convert Domain Model to DTO
+            var response = new BlogPostDto
+            {
+                Id = deletedBlogPost.Id,
+                Author = deletedBlogPost.Author,
+                Content = deletedBlogPost.Content,
+                FeaturedImageUrl = deletedBlogPost.FeaturedImageUrl,
+                IsVisible = deletedBlogPost.IsVisible,
+                PublishedDate = deletedBlogPost.PublishedDate,
+                ShortDescription = deletedBlogPost.ShortDescription,
+                Title = deletedBlogPost.Title,
+                UrlHandle = deletedBlogPost.UrlHandle,
+            };
+
             return Ok(response);
         }
     } 
