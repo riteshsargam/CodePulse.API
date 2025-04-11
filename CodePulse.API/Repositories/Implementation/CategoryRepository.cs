@@ -13,9 +13,10 @@ namespace CodePulse.API.Repositories.Implementation
         {
             this.dbContext = dbContext;
         }
+
         public async Task<Category> CreateAsync(Category category)
         {
-            await dbContext.Categories.AddAsync(category);  
+            await dbContext.Categories.AddAsync(category);
             await dbContext.SaveChangesAsync();
 
             return category;
@@ -40,10 +41,9 @@ namespace CodePulse.API.Repositories.Implementation
             return await dbContext.Categories.ToListAsync();
         }
 
-        public async Task<Category?> GetByIdAsync(Guid id)
+        public async Task<Category?> GetById(Guid id)
         {
-            return await dbContext.Categories
-                .FirstOrDefaultAsync(x => x.Id == id);
+            return await dbContext.Categories.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Category?> UpdateAsync(Category category)
@@ -56,7 +56,7 @@ namespace CodePulse.API.Repositories.Implementation
                 await dbContext.SaveChangesAsync();
                 return category;
             }
-            
+
             return null;
         }
     }

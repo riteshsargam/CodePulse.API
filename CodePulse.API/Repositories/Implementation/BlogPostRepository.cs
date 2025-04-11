@@ -1,9 +1,7 @@
-﻿using CodePulse.API.Controllers;
-using CodePulse.API.Data;
+﻿using CodePulse.API.Data;
 using CodePulse.API.Models.Domain;
 using CodePulse.API.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
-using System.Collections;
 
 namespace CodePulse.API.Repositories.Implementation
 {
@@ -15,6 +13,8 @@ namespace CodePulse.API.Repositories.Implementation
         {
             this.dbContext = dbContext;
         }
+
+
         public async Task<BlogPost> CreateAsync(BlogPost blogPost)
         {
             await dbContext.BlogPosts.AddAsync(blogPost);
@@ -26,14 +26,14 @@ namespace CodePulse.API.Repositories.Implementation
         {
             var existingBlogPost = await dbContext.BlogPosts.FirstOrDefaultAsync(x => x.Id == id);
 
-            if(existingBlogPost is not null)
+            if (existingBlogPost != null)
             {
                 dbContext.BlogPosts.Remove(existingBlogPost);
-                dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
                 return existingBlogPost;
             }
-            return null;
 
+            return null;
         }
 
         public async Task<IEnumerable<BlogPost>> GetAllAsync()
@@ -48,7 +48,8 @@ namespace CodePulse.API.Repositories.Implementation
 
         public async Task<BlogPost?> UpdateAsync(BlogPost blogPost)
         {
-            var existingBlogPost = await dbContext.BlogPosts.Include(x => x.Categories).FirstOrDefaultAsync(x => x.Id == blogPost.Id);
+            var existingBlogPost = await dbContext.BlogPosts.Include(x => x.Categories)
+                .FirstOrDefaultAsync(x => x.Id == blogPost.Id);
 
             if (existingBlogPost == null)
             {
@@ -62,9 +63,8 @@ namespace CodePulse.API.Repositories.Implementation
             existingBlogPost.Categories = blogPost.Categories;
 
             await dbContext.SaveChangesAsync();
+
             return blogPost;
         }
-
-        
     }
 }
