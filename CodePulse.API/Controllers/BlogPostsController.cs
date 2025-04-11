@@ -40,7 +40,7 @@ namespace CodePulse.API.Controllers
             foreach (var categoryGuid in request.Categories)
             {
                 var existingCategory = await categoryRepository.GetByIdAsync(categoryGuid);
-                if(existingCategory is not null)
+                if (existingCategory is not null)
                 {
                     blogPost.Categories.Add(existingCategory);
                 }
@@ -102,6 +102,41 @@ namespace CodePulse.API.Controllers
             }
 
             return Ok(response);
+        }
+
+        // GET : {apibaseurl}/api/blogposts/{id}
+        [HttpGet]
+        [Route("{id:Guid}")]
+
+        public async Task<IActionResult> GetBlogPostById([FromRoute] Guid id)
+        {
+            var blogPost = await blogPostRepository.GetByIdAsync(id);
+
+            if (blogPost is null)
+            {
+                return NotFound();
+            }
+            // Convert Domain Model to DTO
+            var response = new BlogPostDto
+            {
+                Id = blogPost.Id,
+                Author = blogPost.Author,
+                Content = blogPost.Content,
+                FeaturedImageUrl = blogPost.FeaturedImageUrl,
+                IsVisible = blogPost.IsVisible,
+                PublishedDate = blogPost.PublishedDate,
+                ShortDescription = blogPost.ShortDescription,
+                Title = blogPost.Title,
+                UrlHandle = blogPost.UrlHandle,
+                Categories = blogPost.Categories.Select(x => new CategoryDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    UrlHandle = x.UrlHandle
+                }).ToList()
+            };
+            return Ok(response);
+
         }
     }
 }
