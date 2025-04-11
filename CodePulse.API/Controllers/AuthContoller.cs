@@ -16,6 +16,40 @@ namespace CodePulse.API.Controllers
             this.userManager = userManager;
         }
 
+        // POST: {apibaseurl}/api/auth/login
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
+        {
+            // Check Email
+            var identityUser = await userManager.FindByEmailAsync(request.Email);
+            if (identityUser is not null)
+            {
+                // Check Password
+                var checkPasswordResult = await userManager.CheckPasswordAsync(identityUser, request.Password);
+
+                if (checkPasswordResult)
+                {
+                    var roles = await userManager.GetRolesAsync(identityUser);
+
+                    // Create a Token and Response
+
+                    var response = new LoginResponseDto
+                    {
+                        Email = request.Email,
+                        Role = roles.ToList(),
+                        Token = "TOKEN"
+                    };
+
+                    return Ok(response);
+                }
+            }
+            ModelState.AddModelError("", "Invalid Email or Password");
+
+            return ValidationProblem(ModelState);
+        }
+
+
         //  POST: {apibaseurl}/api/auth/register
         [HttpPost]
         [Route("register")]
@@ -33,18 +67,18 @@ namespace CodePulse.API.Controllers
             // Create User
             var identityResult = await userManager.CreateAsync(user, request.Password);
 
-            if(identityResult.Succeeded)
+            if (identityResult.Succeeded)
             {
                 // Add Roles to user (Reader)
                 identityResult = await userManager.AddToRoleAsync(user, "Reader");
 
-                if(identityResult.Succeeded)
+                if (identityResult.Succeeded)
                 {
                     return Ok();
                 }
                 else
                 {
-                    if(identityResult.Errors.Any())
+                    if (identityResult.Errors.Any())
                     {
                         foreach (var error in identityResult.Errors)
                         {
