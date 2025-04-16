@@ -8,40 +8,40 @@ namespace CodePulse.API.Data
     {
         public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options)
         {
-
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            var readerRoleId = "801fe506-e887-4d96-b46c-2242b5a754f4";
-            var writerRoleId = "d0f1b5a2-4c3e-4f8b-9c7d-6a0e5f3b1c2f";
+            var readerRoleId = "28d65a5b-a7db-4850-b380-83591f7d7531";
+            var writerRoleId = "9740f16c-24a1-4224-a7be-1bb00b7c6892";
 
             // Create Reader and Writer Role
-            var roles = new List<IdentityRole>()
+            var roles = new List<IdentityRole>
             {
-                new IdentityRole
+                new IdentityRole()
                 {
                     Id = readerRoleId,
                     Name = "Reader",
                     NormalizedName = "Reader".ToUpper(),
-                    ConcurrencyStamp = readerRoleId,
+                    ConcurrencyStamp = readerRoleId
                 },
-                new IdentityRole
+                new IdentityRole()
                 {
                     Id = writerRoleId,
                     Name = "Writer",
                     NormalizedName = "Writer".ToUpper(),
-                    ConcurrencyStamp = writerRoleId,
+                    ConcurrencyStamp = writerRoleId
                 }
             };
 
-            // Seed the Roles
+            // Seed the roles
             builder.Entity<IdentityRole>().HasData(roles);
 
-            // Create Admin User
-            var adminUserId = "a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6";
+
+            // Create an Admin User
+            var adminUserId = "edc267ec-d43c-4e3b-8108-a1a1f819906d";
             var admin = new IdentityUser()
             {
                 Id = adminUserId,
@@ -55,9 +55,9 @@ namespace CodePulse.API.Data
 
             builder.Entity<IdentityUser>().HasData(admin);
 
-            // Give Roles to Admin User
+            // Give Roles To Admin
 
-            var adminRole = new List<IdentityUserRole<string>>()
+            var adminRoles = new List<IdentityUserRole<string>>()
             {
                 new()
                 {
@@ -68,10 +68,10 @@ namespace CodePulse.API.Data
                 {
                     UserId = adminUserId,
                     RoleId = writerRoleId
-                } 
-            }; 
+                }
+            };
 
-            builder.Entity<IdentityUserRole<string>>().HasData(adminRole);
+            builder.Entity<IdentityUserRole<string>>().HasData(adminRoles);
         }
     }
 }

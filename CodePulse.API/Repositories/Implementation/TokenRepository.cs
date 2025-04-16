@@ -21,13 +21,12 @@ namespace CodePulse.API.Repositories.Implementation
             // Create Claims
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.NameIdentifier, user.Id)
+                new Claim(ClaimTypes.Email, user.Email)
             };
 
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
-            // JWT Security Token Paramaters
+            // JWT Security Token Parameters
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
 
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -37,8 +36,7 @@ namespace CodePulse.API.Repositories.Implementation
                 audience: configuration["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(15),
-                signingCredentials: credentials
-            );
+                signingCredentials: credentials);
 
             // Return Token
             return new JwtSecurityTokenHandler().WriteToken(token);

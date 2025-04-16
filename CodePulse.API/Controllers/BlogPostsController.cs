@@ -147,17 +147,19 @@ namespace CodePulse.API.Controllers
         }
 
 
-        // GET : {apiBaseUrl}/api/blogposts/{urlHandle}
+        // GET: {apibaseurl}/api/blogPosts/{urlhandle}
         [HttpGet]
         [Route("{urlHandle}")]
         public async Task<IActionResult> GetBlogPostByUrlHandle([FromRoute] string urlHandle)
         {
-            // Get the BlogPost from Repo
+            // Get blogpost details from repository
             var blogPost = await blogPostRepository.GetByUrlHandleAsync(urlHandle);
+
             if (blogPost is null)
             {
                 return NotFound();
             }
+
             // Convert Domain Model to DTO
             var response = new BlogPostDto
             {
@@ -177,6 +179,7 @@ namespace CodePulse.API.Controllers
                     UrlHandle = x.UrlHandle
                 }).ToList()
             };
+
             return Ok(response);
         }
 

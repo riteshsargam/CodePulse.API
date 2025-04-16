@@ -1,4 +1,5 @@
 ﻿using CodePulse.API.Models.DTO;
+using CodePulse.API.Repositories.Implementation;
 using CodePulse.API.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -8,12 +9,13 @@ namespace CodePulse.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthContoller : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly ITokenRepository tokenRepository;
 
-        public AuthContoller(UserManager<IdentityUser> userManager, ITokenRepository tokenRepository)
+        public AuthController(UserManager<IdentityUser> userManager,
+            ITokenRepository tokenRepository)
         {
             this.userManager = userManager;
             this.tokenRepository = tokenRepository;
@@ -26,6 +28,7 @@ namespace CodePulse.API.Controllers
         {
             // Check Email
             var identityUser = await userManager.FindByEmailAsync(request.Email);
+
             if (identityUser is not null)
             {
                 // Check Password
@@ -36,44 +39,43 @@ namespace CodePulse.API.Controllers
                     var roles = await userManager.GetRolesAsync(identityUser);
 
                     // Create a Token and Response
-                    var jwttoken = tokenRepository.CreateJwtToken(identityUser, roles.ToList());
+                    var jwtToken = tokenRepository.CreateJwtToken(identityUser, roles.ToList());
 
-                    var response = new LoginResponseDto
+                    var response = new LoginResponseDto()
                     {
                         Email = request.Email,
-                        Role = roles.ToList(),
-                        Token = jwttoken
+                        Roles = roles.ToList(),
+                        Token = jwtToken
                     };
 
                     return Ok(response);
                 }
             }
-            ModelState.AddModelError("", "Invalid Email or Password");
+            ModelState.AddModelError("", "Email or Password Incorrect");
+
 
             return ValidationProblem(ModelState);
         }
 
 
-        //  POST: {apibaseurl}/api/auth/register
+        // POST: {apibaseurl}/api/auth/register
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
         {
-            // Create IdentityUser Object
-
+            // Create IdentityUser object
             var user = new IdentityUser
             {
                 UserName = request.Email?.Trim(),
-                Email = request.Email?.Trim(),
+                Email = request.Email?.Trim()
             };
-
 
             // Create User
             var identityResult = await userManager.CreateAsync(user, request.Password);
 
             if (identityResult.Succeeded)
             {
-                // Add Roles to user (Reader)
+                // Add Role to user (Reader)
                 identityResult = await userManager.AddToRoleAsync(user, "Reader");
 
                 if (identityResult.Succeeded)
@@ -104,5 +106,6 @@ namespace CodePulse.API.Controllers
 
             return ValidationProblem(ModelState);
         }
+
     }
 }
