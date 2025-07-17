@@ -1,4 +1,3 @@
-```
 # CodePulse.API
 
 Welcome to **CodePulse.API**, a blog website built using ASP.NET Core. This repository houses the back-end API for a dynamic blogging platform that allows users to create, edit, and manage their blogs easily. This project leverages ASP.NET Core's capabilities to deliver a robust, scalable, and performant API.
