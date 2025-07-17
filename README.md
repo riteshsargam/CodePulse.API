@@ -84,9 +84,6 @@ Here's a brief overview of some of the key API endpoints:
 
 Contributions are welcome! If you have suggestions for improvement or new features, feel free to fork the repository and submit a pull request. Please ensure your contributions align with the project's coding standards and practices.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact
 
@@ -95,4 +92,3 @@ For any questions or feedback, please reach out through the repository's GitHub 
 ---
 
 Thank you for checking out CodePulse.API! We hope you find it useful and a solid starting point for your ASP.NET Core projects.
-```
