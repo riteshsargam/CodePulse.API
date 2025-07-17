@@ -12,7 +12,7 @@ Welcome to **CodePulse.API**, a blog website built using ASP.NET Core. This repo
 
 ## Prerequisites
 
-- [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) or any compatible database
 - [Visual Studio 2022](https://visualstudio.microsoft.com/vs/) or any preferred IDE
 
